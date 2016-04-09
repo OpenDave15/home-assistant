@@ -303,3 +303,22 @@ def test_has_at_least_one_key():
 
     for value in ({'beer': None}, {'soda': None}):
         schema(value)
+
+
+def test_validate_values():
+    """Test validate_values validator."""
+    valid_values = ['hey', 'hallo', 'heisann']
+    schema = vol.Schema(cv.validate_values(valid_values))
+
+    for value in ('HEY', 'hei', 'ha'):
+        with pytest.raises(vol.MultipleInvalid):
+            schema(value)
+
+    with pytest.raises(vol.MultipleInvalid):
+            schema(valid_values+["ha"])
+
+    for value in valid_values:
+        schema(value)
+
+    schema(valid_values)
+    schema({'hey', 'hallo', 'heisann'})

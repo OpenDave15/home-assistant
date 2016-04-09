@@ -42,6 +42,8 @@ def isfile(value):
 
 def ensure_list(value):
     """Wrap value in list if it is not one."""
+    if isinstance(value, set):
+        return list(value)
     return value if isinstance(value, list) else [value]
 
 
@@ -218,6 +220,17 @@ def has_at_least_one_key(*keys):
 
     return validate
 
+
+def validate_values(valid_values):
+    """Validator that value is in valid_values list."""
+    def validator(values):
+        """Test values exist in valid_values."""
+        values = ensure_list(values)
+        for value in values:
+            if value not in valid_values:
+                raise vol.Invalid('{} is an invalid value.'.format(value))
+        return values
+    return validator
 
 # Schemas
 
